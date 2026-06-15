@@ -1,45 +1,53 @@
 import axios from "axios";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function Profile() {
-    const [user,setUser]=useState(null);
-   
-    useEffect(()=>{
+    const { user } = useContext(AuthContext);
+    // const [user, setUser] = useState(null);
+    
 
-        const getProfile =async ()=>{
-            try{
+    useEffect(() => {
+
+        const getProfile = async () => {
+            try {
                 const token = localStorage.getItem("token");
-                  console.log("Token:", token);  
+                console.log("Token:", token);
 
-                const response =await axios.get(
-                    "http://localhost:5000/profile",{
-                        headers:{
-                            authorization:token,},
-                    }
+                const response = await axios.get(
+                    "http://localhost:5000/profile", {
+                    headers: {
+                        authorization: token,
+                    },
+                }
                 );
                 setUser(response.data);
             }
-            catch(error){
+            catch (error) {
                 console.log(error.response?.data);
             }
         };
-        getProfile();   
-        
-    },[]);
+        getProfile();
 
-    const logout =()=>{
+    }, []);
+
+    const logout = () => {
         localStorage.removeItem("token");
         window.location.reload();
     };
-    
-  return (
-    <div>
-      <h2>Profile Page</h2>
-      {user && (<>{user.message}</>)}
-         <br></br><br></br>
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
+
+    return (
+        <div>
+            <h2>Profile Page</h2>
+            {/* {user && (<>{user.message}</>)} */}
+            
+            <h3>
+                Email: {user?.email}
+            </h3>
+            <button onClick={logout}>Logout</button>
+        </div>
+    );
 }
 
 export default Profile;

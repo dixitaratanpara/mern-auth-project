@@ -7,68 +7,82 @@ import { AuthContext } from "../context/AuthContext";
 
 
 function Login() {
-    const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");
-    const navigate =useNavigate();
-    const { setToken } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { setToken, setUser } = useContext(AuthContext);
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-  try {
+    try {
 
-    const response = await axios.post(
-      "http://localhost:5000/login",
-      {
-        email,
-        password,
-      }
-    );
+      const response = await axios.post(
+        "http://localhost:5000/login",
+        {
+          email,
+          password,
+        }
+      );
 
-     localStorage.setItem("token",response.data.token);
-    setToken(response.data.token);
-    console.log(response.data);
+      localStorage.setItem("token",
+        response.data.token);
+        
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: email,
+        })
+      );
 
-   navigate("/profile");
+      setToken(response.data.token);
 
-  } 
-  
-  catch (error) {
-    console.log(error);
-  }
-};
+
+      setUser({
+        email: email,
+      });
+
+
+      navigate("/profile");
+
+    }
+
+    catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
       <h2>Login Page</h2>
 
-       <form onSubmit={handleSubmit}>
-    <input
-      type="email"
-      placeholder="Enter Email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-    />
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-    <br /><br />
+        <br /><br />
 
-    <input
-      type="password"
-      placeholder="Enter Password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-    />
+        <input
+          type="password"
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-    <br /><br />
+        <br /><br />
 
-    <button type="submit">
-      Login
-    </button>
+        <button type="submit">
+          Login
+        </button>
 
-  </form>
-   <p> Don't have account?please Register First 
-     &nbsp;<Link to={"/register"}>Register</Link>
-   </p>
+      </form>
+      <p> Don't have account?please Register First
+        &nbsp;<Link to={"/register"}>Register</Link>
+      </p>
 
     </div>
   );

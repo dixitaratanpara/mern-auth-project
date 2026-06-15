@@ -3,18 +3,19 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
-   
-    const { token , setToken} = useContext(AuthContext);
+
+    const { token, setToken, user, } = useContext(AuthContext);
 
     console.log("Context Token:", token);
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setToken(null);
         window.location.href = "/login";
     };
 
-    
+
 
     return (
         <div>
@@ -27,10 +28,15 @@ function Navbar() {
                 </>
             ) : (
                 <>
+                    <span>
+                        Hello {user?.email}
+                    </span>
+
                     <Link to="/profile">Profile</Link>
-                      {"|"} 
-                    &nbsp; 
+                    {"|"}
+                    &nbsp;
                     <button onClick={logout}>Logout</button>
+                    
                 </>
             )}
 

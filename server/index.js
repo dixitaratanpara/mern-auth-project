@@ -7,11 +7,15 @@ const bcrypt = require("bcryptjs");
 const jwt= require("jsonwebtoken");
 const auth= require("./middleware/authMiddleware");
 const authRoutes = require("./routes/authRoutes");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use("/",authRoutes);
+
+
 
 //server request
 app.get("/",(req,res)=>{
@@ -89,13 +93,13 @@ app.get("/",(req,res)=>{
 //   }
 // });
 
-// app.get("/profile" , auth ,(req,res)=>{
-//      res.json({
-//       success:true,
-//       message:"Welcome to Profile",
-//       user: req.user,
-//      });
-// });
+app.get("/profile" , auth ,(req,res)=>{
+     res.json({
+      success:true,
+      message:"Welcome to Profile",
+      user: req.user,
+     });
+});
 
 //mongodb connection
 mongoose

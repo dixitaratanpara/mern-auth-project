@@ -4,9 +4,10 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function Profile() {
-    const { user } = useContext(AuthContext);
+    const { user , setUser} = useContext(AuthContext);
     // const [user, setUser] = useState(null);
-    
+      console.log(user);
+
 
     useEffect(() => {
 
@@ -22,12 +23,14 @@ function Profile() {
                     },
                 }
                 );
-                setUser(response.data);
+                setUser(response.data.user);
+                console.log(response.data.user);
             }
             catch (error) {
                 console.log(error.response?.data);
             }
         };
+
         getProfile();
 
     }, []);
@@ -41,10 +44,10 @@ function Profile() {
         <div>
             <h2>Profile Page</h2>
             {/* {user && (<>{user.message}</>)} */}
-            
-            <h3>
-                Email: {user?.email}
-            </h3>
+              <p>Hello</p>
+            <p> Name: {user?.name}</p>
+
+            <p>Email: {user?.email}</p>
             <button onClick={logout}>Logout</button>
         </div>
     );

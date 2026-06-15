@@ -9,6 +9,7 @@ const auth= require("./middleware/authMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
 
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -93,12 +94,25 @@ app.get("/",(req,res)=>{
 //   }
 // });
 
-app.get("/profile" , auth ,(req,res)=>{
-     res.json({
-      success:true,
-      message:"Welcome to Profile",
-      user: req.user,
-     });
+app.get("/profile" , auth ,async(req,res)=>{
+     try {
+
+    const user = await User.findById(req.user.id)
+      .select("-password");
+
+    res.json({
+      success: true,
+      user,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+
+  }
 });
 
 //mongodb connection

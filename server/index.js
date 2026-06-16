@@ -96,7 +96,7 @@ app.get("/",(req,res)=>{
 
 app.get("/profile" , auth ,async(req,res)=>{
      try {
-
+ 
     const user = await User.findById(req.user.id)
       .select("-password");
 
@@ -113,6 +113,39 @@ app.get("/profile" , auth ,async(req,res)=>{
     });
 
   }
+});
+
+app.put("/profile", auth, async (req, res) => {
+
+  try {
+
+    const { name, email } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        name,
+        email,
+      },
+      {
+        new: true,
+      }
+    ).select("-password");
+
+    res.json({
+      success: true,
+      user: updatedUser,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+
+  }
+
 });
 
 //mongodb connection

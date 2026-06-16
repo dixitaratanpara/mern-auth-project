@@ -29,10 +29,14 @@ function Navbar() {
             ) : (
                 <>
                     <span>
-                        Hello {user?.email}
+                        Hello {user?.name}
                     </span>
-
+                    &nbsp;
+                    {"|"}
+                       &nbsp;
+                       
                     <Link to="/profile">Profile</Link>
+                    &nbsp;
                     {"|"}
                     &nbsp;
                     <button onClick={logout}>Logout</button>

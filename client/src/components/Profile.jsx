@@ -4,9 +4,10 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function Profile() {
-    const { user , setUser} = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true);
     // const [user, setUser] = useState(null);
-      console.log(user);
+    console.log(user);
 
 
     useEffect(() => {
@@ -23,11 +24,19 @@ function Profile() {
                     },
                 }
                 );
+
+                await new Promise((resolve) =>          //for loading in profile 
+                    setTimeout(resolve, 3000)
+                );
+
                 setUser(response.data.user);
                 console.log(response.data.user);
+                setLoading(false);
             }
+
             catch (error) {
                 console.log(error.response?.data);
+                setLoading(false);
             }
         };
 
@@ -35,16 +44,19 @@ function Profile() {
 
     }, []);
 
+    if (loading) { return <h2>Loading....</h2> }
+
     const logout = () => {
         localStorage.removeItem("token");
         window.location.reload();
     };
 
+
     return (
         <div>
             <h2>Profile Page</h2>
             {/* {user && (<>{user.message}</>)} */}
-              <p>Hello</p>
+            <p>Hello</p>
             <p> Name: {user?.name}</p>
 
             <p>Email: {user?.email}</p>

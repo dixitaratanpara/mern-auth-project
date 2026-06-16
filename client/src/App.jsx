@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Navbar from './components/Navbar';
+import PrivateRoute from './components/PrivateRoute';
 
 import './App.css'
 
@@ -19,8 +20,8 @@ function App() {
            <hr />
           <Profile /> */ }
 
-      <Navbar></Navbar>   
-      
+      <Navbar></Navbar>
+
       <Routes>
 
         <Route
@@ -36,9 +37,9 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
-              <Profile></Profile>
-            </ProtectedRoute>
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
           }
         />
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 
 function Login() {
@@ -42,18 +43,22 @@ function Login() {
         email: email,
       });
 
-
-      navigate("/profile");
+     toast.success("Login Successful"); //toast
+      navigate("/dashboard");
 
     }
 
     catch (error) {
       console.log(error);
+      toast.error(
+  error.response?.data?.message ||
+  "Login Failed"
+);
     }
   };
 
   return (
-    <div>
+    <div className="card">
       <h2>Login Page</h2>
 
       <form onSubmit={handleSubmit}>

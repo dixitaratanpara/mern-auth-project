@@ -28,7 +28,7 @@ function Register() {
     };
 
   return (
-    <div>
+    <div className="card">
       <h2>Register Page</h2>
 
       <form onSubmit={handleSubmit}>

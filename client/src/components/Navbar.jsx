@@ -18,29 +18,35 @@ function Navbar() {
 
 
     return (
-        <div>
+        <div className="navbar">
             {!token ? (
                 <><Link to="/register">Register</Link>
                     {"|"}
 
                     <Link to="/Login">Login</Link>
                     {"|"}
+
+
                 </>
             ) : (
                 <>
-                    <span>
+                    {/* <span>
                         Hello {user?.name}
-                    </span>
+                    </span> */}
+                    <Link to="/dashboard">
+                        Dashboard
+                    </Link>
                     &nbsp;
                     {"|"}
-                       &nbsp;
-                       
+                    &nbsp;
+
+
                     <Link to="/profile">Profile</Link>
                     &nbsp;
-                    {"|"}
+                    {/* {"|"}
                     &nbsp;
-                    <button onClick={logout}>Logout</button>
-                    
+                    <button onClick={logout}>Logout</button> */}
+
                 </>
             )}
 

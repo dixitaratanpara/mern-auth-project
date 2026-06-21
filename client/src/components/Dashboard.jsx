@@ -12,15 +12,9 @@ function Dashboard() {
             👋 Welcome, {user?.name}
         </h2>
 
-        <br />
-
         <p>
             <strong>Name:</strong> {user?.name}
-        </p>
-
-        <br />
-
-        <p>
+              <br></br>
             <strong>Email:</strong> {user?.email}
         </p>
 
@@ -44,27 +38,6 @@ function Dashboard() {
         </div>
 
         <br />
-
-        {/* <h3>Quick Actions</h3>
-
-        <br /> */}
-
-        {/* <button>
-            ✏️ Edit Profile
-        </button>
-
-        <br /><br />
-
-        <button>
-            🔐 Change Password
-        </button>
-
-        <br /><br />
-
-        <button>
-            🚪 Logout
-        </button> */}
-
     </div>
 );
 }

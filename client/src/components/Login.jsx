@@ -9,15 +9,18 @@ import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
+
   const { setToken, setUser } = useContext(AuthContext);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-
       const response = await axios.post(
         "http://localhost:5000/login",
         {
@@ -26,15 +29,12 @@ function Login() {
         }
       );
 
-      localStorage.setItem("token",
-        response.data.token);
-        
-      localStorage.setItem(
-        "user",
+      localStorage.setItem("token", response.data.token);
+
+      localStorage.setItem("user",
         JSON.stringify({
           email: email,
-        })
-      );
+        }));
 
       setToken(response.data.token);
 
@@ -43,19 +43,18 @@ function Login() {
         email: email,
       });
 
-     toast.success("Login Successful"); //toast
+      toast.success("Login Successful"); //toast
       navigate("/dashboard");
-
     }
 
     catch (error) {
       console.log(error);
       toast.error(
-  error.response?.data?.message ||
-  "Login Failed"
-);
+        error.response?.data?.message ||"Login Failed"
+      );
     }
   };
+
 
   return (
     <div className="card">

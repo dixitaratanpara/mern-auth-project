@@ -25,8 +25,6 @@ function Navbar() {
 
                     <Link to="/Login">Login</Link>
                     {"|"}
-
-
                 </>
             ) : (
                 <>
@@ -39,18 +37,12 @@ function Navbar() {
                     &nbsp;
                     {"|"}
                     &nbsp;
-
-
                     <Link to="/profile">Profile</Link>
-                    &nbsp;
-                    {/* {"|"}
-                    &nbsp;
-                    <button onClick={logout}>Logout</button> */}
 
                 </>
             )}
 
-
+            
         </div>
     );
 }

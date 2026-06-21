@@ -179,7 +179,8 @@ h1 {
 .profile-image {
   width: 150px;
   height: 150px;
-  border-radius: 50%;
+  border-radius:500px;
+  border-image: round;
   object-fit: cover;
   margin-bottom: 15px;
 }

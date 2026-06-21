@@ -1,104 +1,52 @@
 require("dotenv").config();
 
-const express= require("express");
+const express = require("express");
 const mongoose = require("mongoose");
-const User= require("./models/User");
+const User = require("./models/User");
 const bcrypt = require("bcryptjs");
-const jwt= require("jsonwebtoken");
-const auth= require("./middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
+const auth = require("./middleware/authMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+const adminAuth= require("./middleware/adminAuth");
 
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/",authRoutes);
+app.use("/", authRoutes);
 
 
 
 //server request
-app.get("/",(req,res)=>{
-    res.send("server running successfully");
+app.get("/", (req, res) => {
+  res.send("server running successfully");
 });
 
-// //register request
-// app.post("/register", async (req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
 
-//     const hashedPassword = await bcrypt.hash(password, 10);
+app.get(
+    "/admin",
+    auth,
+    adminAuth,
 
-//     const user = await User.create({
-//       name,
-//       email,
-//       password: hashedPassword,
-//     });
+    (req, res) => {
 
-//     res.status(201).json({
-//       success: true,
-//       user,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// });
+        res.json({
+            success: true,
+            message:
+            "Welcome Admin",
+        });
 
-//login request
-// app.post("/login", async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
+    }
+);
 
-//     const user = await User.findOne({ email });
+//profile get
+app.get("/profile", auth, async (req, res) => {
+  try {
 
-//     if (!user) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
-
-//     const isMatch = await bcrypt.compare(                  //pasword encrypt
-//       password,
-//       user.password
-//     );
-
-//     if (!isMatch) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid Password",
-//       });
-//     }
-    
-//     const token= jwt.sign(
-//       {id:user._id},
-//       "mysecretkey",
-//       {expiresIn: "1d"},
-//     );
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Login Successful",
-//       token,                           //token
-//     });
-
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// });
-
-app.get("/profile" , auth ,async(req,res)=>{
-     try {
- 
     const user = await User.findById(req.user.id)
       .select("-password");
 
@@ -117,6 +65,7 @@ app.get("/profile" , auth ,async(req,res)=>{
   }
 });
 
+//profile put
 app.put("/profile", auth, async (req, res) => {
 
   try {
@@ -150,6 +99,8 @@ app.put("/profile", auth, async (req, res) => {
 
 });
 
+
+//delete profile
 app.delete("/profile", auth, async (req, res) => {
   try {
 
@@ -171,123 +122,123 @@ app.delete("/profile", auth, async (req, res) => {
 });
 
 
-
+//change password put
 app.put("/change-password", auth, async (req, res) => {
-    try {
+  try {
 
-        const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body;
 
-        const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id);
 
-        const isMatch = await bcrypt.compare(
-            oldPassword,
-            user.password
-        );
+    const isMatch = await bcrypt.compare(
+      oldPassword,
+      user.password
+    );
 
-        if (!isMatch) {
-            return res.status(400).json({
-                success: false,
-                message: "Old Password Incorrect",
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(
-            newPassword,
-            10
-        );
-
-        user.password = hashedPassword;
-
-        await user.save();
-
-        res.json({
-            success: true,
-            message: "Password Changed Successfully",
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-            success: false,
-            message: "Server Error",
-        });
-
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Old Password Incorrect",
+      });
     }
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password Changed Successfully",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+
+  }
 });
 
 //profile picture
 const storage = multer.diskStorage({
 
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
 
-    filename: function (req, file, cb) {
+  filename: function (req, file, cb) {
 
-        cb(
-            null,
-            Date.now() +
-            path.extname(file.originalname)
-        );
-    },
+    cb(
+      null,
+      Date.now() +
+      path.extname(file.originalname)
+    );
+  },
 });
 
 const upload = multer({
-    storage: storage,
+  storage: storage,
 });
 app.use("/uploads",
-    express.static("uploads")
+  express.static("uploads")
 );
 app.put(
-    "/upload-profile-image",
-    auth,
-    upload.single("image"),
+  "/upload-profile-image",
+  auth,
+  upload.single("image"),
 
-    async (req, res) => {
+  async (req, res) => {
 
-        try {
+    try {
 
-            const user =
-                await User.findById(
-                    req.user.id
-                );
+      const user =
+        await User.findById(
+          req.user.id
+        );
 
-            user.profileImage =
-                req.file.filename;
+      user.profileImage =
+        req.file.filename;
 
-            await user.save();
+      await user.save();
 
-            res.json({
-                success: true,
-                image:
-                    req.file.filename,
-            });
+      res.json({
+        success: true,
+        image:
+          req.file.filename,
+      });
 
-        }
-
-        catch (error) {
-
-            res.status(500).json({
-                success: false,
-                message: "Upload Failed",
-            });
-
-        }
     }
+
+    catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message: "Upload Failed",
+      });
+
+    }
+  }
 );
 
 //mongodb connection
 mongoose
-     .connect("mongodb://127.0.0.1:27017/mernAuthDb")
-     .then(()=>{
-        console.log("MongoDB Connected");
-     })
+  .connect("mongodb://127.0.0.1:27017/mernAuthDb")
+  .then(() => {
+    console.log("MongoDB Connected");
+  })
 
-     .catch((err)=>{
-        console.log(err);
-     });
+  .catch((err) => {
+    console.log(err);
+  });
 
 
-app.listen(5000,()=>{
-     console.log("server running on port 5000");
+app.listen(5000, () => {
+  console.log("server running on port 5000");
 });

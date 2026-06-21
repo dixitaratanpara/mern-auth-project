@@ -7,19 +7,11 @@ import { toast } from "react-toastify";
 function Profile() {
     const { user, setUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
-    // const [user, setUser] = useState(null);
-    console.log(user);
-
     const [editMode, setEditMode] = useState(false);
-
     const [name, setName] = useState("");
-
     const [email, setEmail] = useState("");
-
     const [oldPassword, setOldPassword] = useState("");
-
     const [newPassword, setNewPassword] = useState("");
-
     const [image, setImage] = useState(null);
 
 
@@ -55,9 +47,7 @@ function Profile() {
                 setLoading(false);
             }
         };
-
         getProfile();
-
     }, []);
 
     if (loading) { return <h2>Loading....</h2> }
@@ -159,30 +149,32 @@ function Profile() {
     };
 
     //uplod profile picture
-     const uploadImage = async ()=>{
-        try{
+    const uploadImage = async () => {
+        try {
             const token = localStorage.getItem("token");
 
-            const formData= new FormData();
+            const formData = new FormData();
 
-            formData.append("image",image);
+            formData.append("image", image);
 
-            const response= await axios.put(
+            const response = await axios.put(
                 "http://localhost:5000/upload-profile-image",
                 formData,
                 {
-                    headers:{
-                        authorization:token,
+                    headers: {
+                        authorization: token,
                     },
                 }
             );
             console.log(response.data);
         }
-        catch(error){
+        catch (error) {
             console.log(error);
         }
-     };
+    };
 
+
+    //logout 
     const logout = () => {
         localStorage.removeItem("token");
         window.location.reload();
@@ -192,7 +184,7 @@ function Profile() {
     return (
         <div className="card">
             <h2>My Profile Page</h2>
-            {/* {user && (<>{user.message}</>)} */}
+
 
             <input
                 type="file"
@@ -201,21 +193,21 @@ function Profile() {
                 }
             />
             <button onClick={uploadImage}>
-    Upload Photo
-</button>
+                Upload Photo
+            </button>
             <p>Hello</p>
             {user?.profileImage && (
 
-    <img
-        src={`http://localhost:5000/uploads/${user.profileImage}`}
-        alt="Profile"
-        width="150"
-    />
+                <img
+                    src={`http://localhost:5000/uploads/${user.profileImage}`}
+                    alt="Profile"
+                    width="150"
+                />
 
-)}
+            )}
             <p><strong>Name:</strong> {user?.name}</p>
             <p><strong>Email:</strong> {user?.email}</p>
-            {/* <p>Edit Mode: {editMode.toString()}</p> */}
+
             <button
                 onClick={() =>
                     setEditMode(!editMode)}

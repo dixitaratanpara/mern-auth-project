@@ -1,6 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import { useState } from 'react';
 import Register from './components/Register';
 import Login from "./components/Login";
 import Profile from "./components/Profile";
@@ -17,14 +15,9 @@ function App() {
   return (
     <div className="app-container">
       <h1>MERN Auth Project</h1>
-      {/* /* <Register></Register>
-          <hr />
-          <Login />
-           <hr />
-          <Profile /> */ }
-
-      <Navbar></Navbar>
-
+     
+      <Navbar/>
+      
       <Routes>
 
         <Route

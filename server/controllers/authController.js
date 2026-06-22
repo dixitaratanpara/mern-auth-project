@@ -178,3 +178,21 @@ exports.getAllUsers = async (req, res) => {
     }
 
 };
+
+//delete admin dashboard user
+exports.deleteUser= async(req,res)=>{
+  try{
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success:true,
+      message:"User Deleted Successfully",
+    });
+  }
+  catch(error){
+    res.status(500).json({
+      success:false,
+      message:error.message,
+    });
+  }
+};

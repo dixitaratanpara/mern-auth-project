@@ -1,38 +1,44 @@
 const jwt = require("jsonwebtoken");
 
-const auth = async (req, res, next) => {
+const auth = (req, res, next) => {
     try {
 
-        const token = req.headers.authorization.replace("Bearer ", "");
+        const authHeader = req.headers.authorization;
 
-        if (!token) {
+        if (!authHeader) {
             return res.status(401).json({
                 success: false,
                 message: "No token provided",
             });
         }
-console.log("JWT_SECRET =", process.env.JWT_SECRET);
-        
+
+        console.log("AUTH HEADER =", authHeader);
+
+        // Bearer remove
+        const token = authHeader.replace("Bearer ", "");
+
+        // Verify token
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET
         );
 
+        console.log("DECODED =", decoded);
+
         req.user = decoded;
 
         next();
 
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+
     }
-
-    catch (error) {
-
-    console.log(error);
-
-    res.status(401).json({
-        success: false,
-        message: error.message,
-    });
-}
 };
 
 module.exports = auth;

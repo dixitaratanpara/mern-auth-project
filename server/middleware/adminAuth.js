@@ -1,14 +1,44 @@
-const adminAuth = (req, res, next) => {
+const jwt = require("jsonwebtoken");
 
-    if (req.user.role !== "admin") {
+const auth = (req, res, next) => {
+    try {
 
-        return res.status(403).json({
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            return res.status(401).json({
+                success: false,
+                message: "No token provided",
+            });
+        }
+
+        console.log("AUTH HEADER =", authHeader);
+
+        // Bearer remove
+        const token = authHeader.replace("Bearer ", "");
+
+        // Verify token
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        console.log("DECODED =", decoded);
+
+        req.user = decoded;
+
+        next();
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(401).json({
             success: false,
-            message: "Admin Access Only",
+            message: error.message,
         });
-    }
 
-    next();
+    }
 };
 
-module.exports = adminAuth;
+module.exports = auth;

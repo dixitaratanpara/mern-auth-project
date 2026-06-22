@@ -10,6 +10,7 @@ const {
   login,
   verifyEmail,
   getAllUsers,
+  deleteUser,
 } = require("../controllers/authController");
 
 
@@ -25,5 +26,12 @@ router.get(
     auth,
     admin,
     getAllUsers
+);
+
+router.delete(
+    "/users/:id",
+    auth,
+    admin,
+    deleteUser
 );
 module.exports = router;

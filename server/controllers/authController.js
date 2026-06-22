@@ -97,6 +97,13 @@ exports.login = async (req, res) => {
       success: true,
       message: "Login Successful",
       token,                           //token
+     user: {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    image: user.image,
+  },
     });
     console.log(user.role);
 
@@ -139,6 +146,29 @@ exports.verifyEmail = async (req, res) => {
     }
 
     catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+
+};
+
+//admin dashboard
+exports.getAllUsers = async (req, res) => {
+
+    try {
+
+        const users = await User.find().select("-password");
+
+        res.json({
+            success: true,
+            users,
+        });
+
+    } catch (error) {
 
         res.status(500).json({
             success: false,

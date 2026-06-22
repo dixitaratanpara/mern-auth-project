@@ -29,28 +29,58 @@ function Login() {
         }
       );
 
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
 
-      localStorage.setItem("user",
-        JSON.stringify({
-          email: email,
-        }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user)
+      );
 
       setToken(response.data.token);
 
+      setUser(response.data.user);
 
-      setUser({
-        email: email,
-      });
+      // localStorage.setItem("token", response.data.token);
+
+      // localStorage.setItem("user",
+      //   JSON.stringify({
+      //     email: email,
+      //   }));
+
+      // setToken(response.data.token);
+
+
+      // setUser({
+      //   email: email,
+      // });
 
       toast.success("Login Successful"); //toast
-      navigate("/dashboard");
+      // navigate("/dashboard");
+     console.log("FULL RESPONSE =", response.data);
+console.log("ROLE =", response.data.user.role);
+if (response.data.user.role.trim() === "admin") {
+
+    console.log("ADMIN LOGIN");
+
+    navigate("/admin");
+
+} else {
+
+    console.log("USER LOGIN");
+
+    navigate("/dashboard");
+
+}
+      
     }
 
     catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.message ||"Login Failed"
+        error.response?.data?.message || "Login Failed"
       );
     }
   };

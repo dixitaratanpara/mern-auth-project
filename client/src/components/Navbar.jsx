@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 
 function Navbar() {
 
-    const { token, setToken, user, } = useContext(AuthContext);
+    const { token, setToken, user, setUser} = useContext(AuthContext);
 
     console.log("Context Token:", token);
 
@@ -12,6 +12,7 @@ function Navbar() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setToken(null);
+        setUser(null);
         window.location.href = "/login";
     };
 
@@ -28,12 +29,19 @@ function Navbar() {
                 </>
             ) : (
                 <>
-                    {/* <span>
-                        Hello {user?.name}
-                    </span> */}
-                    <Link to="/dashboard">
-                        Dashboard
-                    </Link>
+                    {user?.role === "admin" ? (
+
+                        <Link to="/admin">
+                            Admin Dashboard
+                        </Link>
+
+                    ) : (
+
+                        <Link to="/dashboard">
+                            Dashboard
+                        </Link>
+
+                    )}
                     &nbsp;
                     {"|"}
                     &nbsp;
@@ -42,7 +50,7 @@ function Navbar() {
                 </>
             )}
 
-            
+
         </div>
     );
 }

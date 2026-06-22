@@ -7,6 +7,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./components/Dashboard";
+import AdminDashboard from "./components/AdminDashboard";
 
 import './App.css'
 
@@ -15,9 +16,11 @@ function App() {
   return (
     <div className="app-container">
       <h1>MERN Auth Project</h1>
-     
-      <Navbar/>
+
+      <Navbar />
+
       
+
       <Routes>
 
         <Route
@@ -44,6 +47,15 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
             </PrivateRoute>
           }
         />

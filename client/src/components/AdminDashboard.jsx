@@ -10,13 +10,18 @@ function AdminDashboard() {
 
     const [users, setUsers] = useState([]);
 
+
+    const [page, setPage] = useState(1);
+
+    const [totalPages, setTotalPages] = useState(1);
+
     //api call admin dashboard
     useEffect(() => {
         const fetchUsers = async () => {
             try {
 
                 const response = await axios.get(
-                    "http://localhost:5000/users",
+                    `http://localhost:5000/users?page=${page}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -27,6 +32,7 @@ function AdminDashboard() {
                 console.log("FULL API RESPONSE =", response.data);
 
                 setUsers(response.data.users);
+                setTotalPages(response.data.totalPages);
 
             } catch (error) {
 
@@ -36,7 +42,7 @@ function AdminDashboard() {
         };
 
         fetchUsers();
-    }, [token]);
+    }, [token, page]);
 
     //     //delete conform popup
     //     const deleteUser = async (id) => {
@@ -80,7 +86,7 @@ function AdminDashboard() {
 
 
     return (
-        <div className="card">
+        <div className="admin-card">
 
             <h2>👨‍💼 Admin Dashboard</h2>
 
@@ -118,46 +124,74 @@ function AdminDashboard() {
 
                 <div className="dashboard-box">
                     <h3>✏️</h3>
-                    <p> Change Role</p>
+                    <p> View Role</p>
                 </div>
 
             </div>
 
-<br></br><br></br>
- <div className="dashboard-box">
-     <h3>All Users</h3>
+            <br></br><br></br>
+            <div className="dashboard-box">
+                <h3>All Users</h3>
+
+                <br />
+
+                <table border="1" cellPadding="10" >
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((item) => (
+                            <tr key={item._id}>
+                                <td>{item.name}</td>
+                                <td>{item.email}</td>
+                                <td>{item.role}</td>
+                                <td>
+                                    <button
+                                     className="delete-btn"
+                                        onClick={() => deleteUser(item._id)}
+                                    >
+                                        🗑 Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             <br />
+<div className="pagination">
+    <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+            >
+                ⬅ Previous
+            </button>
 
-            <table border="1" cellPadding="10" >
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map((item) => (
-                        <tr key={item._id}>
-                            <td>{item.name}</td>
-                            <td>{item.email}</td>
-                            <td>{item.role}</td>
-                            <td>
-                                <button
-                                    onClick={() => deleteUser(item._id)}
-                                >
-                                    🗑 Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
- </div>
+            &nbsp;&nbsp;
+            <br></br>
 
-           
+            <span>
+
+                Page {page} of {totalPages}
+
+            </span>
+
+            &nbsp;&nbsp;
+
+            <button
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+            >
+                Next ➡
+            </button>
+</div>
+            
 
         </div>
 

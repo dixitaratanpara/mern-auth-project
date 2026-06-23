@@ -12,51 +12,51 @@ function AdminDashboard() {
 
     //api call admin dashboard
     useEffect(() => {
-    const fetchUsers = async () => {
-        try {
+        const fetchUsers = async () => {
+            try {
 
-            const response = await axios.get(
-                "http://localhost:5000/users",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+                const response = await axios.get(
+                    "http://localhost:5000/users",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-            console.log("FULL API RESPONSE =", response.data);
+                console.log("FULL API RESPONSE =", response.data);
 
-            setUsers(response.data.users);
+                setUsers(response.data.users);
 
-        } catch (error) {
+            } catch (error) {
 
-            console.log(error);
+                console.log(error);
 
-        }
-    };
+            }
+        };
 
-    fetchUsers();
-}, [token]);
-    
-//     //delete conform popup
-//     const deleteUser = async (id) => {
+        fetchUsers();
+    }, [token]);
 
-//     const confirmDelete = window.confirm(
-//         "Are you sure you want to delete this user?"
-//     );
+    //     //delete conform popup
+    //     const deleteUser = async (id) => {
 
-//     if (!confirmDelete) return;
+    //     const confirmDelete = window.confirm(
+    //         "Are you sure you want to delete this user?"
+    //     );
 
-   
-// };
+    //     if (!confirmDelete) return;
+
+
+    // };
 
 
     //delete admin dashboard
 
     const deleteUser = async (id) => {
-const confirmDelete = window.confirm(
-        "Are you sure you want to delete this user?"
-    );
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this user?"
+        );
 
 
         try {
@@ -102,30 +102,34 @@ const confirmDelete = window.confirm(
 
             <br />
 
-            <button>
-                👥 View Users
-            </button>
+            <div className="dashboard-grid">
+                <div className="dashboard-box">
 
-            <br /><br />
+                    <h3>👥 </h3>
+                    <p>View Users</p>
 
-            <button>
-                🗑 Delete User
-            </button>
+                </div>
+                <div className="dashboard-box">
 
-            <br /><br />
+                    <h3>🗑</h3>
+                    <p>Delete User</p>
 
-            <button>
-                ✏️ Change Role
-            </button>
-            <br></br>
-            <br></br>
-            <hr />
+                </div>
 
-            <h3>All Users</h3>
+                <div className="dashboard-box">
+                    <h3>✏️</h3>
+                    <p> Change Role</p>
+                </div>
+
+            </div>
+
+<br></br><br></br>
+ <div className="dashboard-box">
+     <h3>All Users</h3>
 
             <br />
 
-            <table border="1" cellPadding="10">
+            <table border="1" cellPadding="10" >
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -151,6 +155,9 @@ const confirmDelete = window.confirm(
                     ))}
                 </tbody>
             </table>
+ </div>
+
+           
 
         </div>
 

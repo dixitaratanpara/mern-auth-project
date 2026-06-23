@@ -5,12 +5,15 @@ const auth = require("../middleware/authMiddleware");
 const admin = require("../middleware/adminAuth");
 
 
+
 const {
   register,
   login,
   verifyEmail,
   getAllUsers,
   deleteUser,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/authController");
 
 
@@ -33,5 +36,15 @@ router.delete(
     auth,
     admin,
     deleteUser
+);
+
+router.post(
+    "/forgot-password",
+    forgotPassword
+);
+
+router.post(
+    "/reset-password/:token",
+    resetPassword
 );
 module.exports = router;

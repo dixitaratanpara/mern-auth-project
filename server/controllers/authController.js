@@ -196,3 +196,111 @@ exports.deleteUser= async(req,res)=>{
     });
   }
 };
+
+//forgot password
+exports.forgotPassword = async (req, res) => {
+
+    try {
+
+        const { email } = req.body;
+
+        // First find user
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Then create token
+        const resetToken = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        // Then create link
+        const resetLink =
+            `http://localhost:5173/reset-password/${resetToken}`;
+
+        // Then send email
+        await sendEmail(
+            user.email,
+            "Reset Password",
+            `
+            <h2>Hello ${user.name}</h2>
+            <p>Click below to reset password</p>
+            <a href="${resetLink}">Reset Password</a>
+            `
+        );
+
+        res.json({
+            success: true,
+            message: "Reset Password Link Sent Successfully",
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+
+};
+
+//reset password
+// Reset Password
+exports.resetPassword = async (req, res) => {
+
+    try {
+
+        const { token } = req.params;
+        const { password } = req.body;
+
+        // Verify Token
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        // Find User
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Hash New Password
+        const hashedPassword = await bcrypt.hash(
+            password,
+            10
+        );
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        res.json({
+            success: true,
+            message: "Password Reset Successfully",
+        });
+
+    }
+
+    catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+
+};

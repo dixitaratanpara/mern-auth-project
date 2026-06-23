@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Register() {
 
@@ -12,6 +13,27 @@ function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!name.trim()) {
+            toast.error("Please Enter Name");
+            return;
+        }
+
+        if (!email.trim()) {
+            toast.error("Please Enter Email");
+            return;
+        }
+
+        if (!password.trim()) {
+            toast.error("Please Enter Password");
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return;
+        }
+
+
         try {
             const response = await axios.post(
                 "http://localhost:5000/register",
@@ -22,14 +44,15 @@ function Register() {
                 }
             );
 
-            console.log(response.data);
-            toast.success("Registration Successfully");
+            // console.log(response.data);
+            toast.success("Registration Successful");
 
-            setTimeout(() => {
-                navigate("/login");
-            }, 1500);
+            navigate("/login");
         }
         catch (error) {
+            toast.error(
+                error.response?.data?.message || "Registration Failed"
+            );
             console.log(error);
         }
     };
@@ -43,20 +66,20 @@ function Register() {
                 <input type="text"
                     placeholder="Enter Name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}></input>
+                    onChange={(e) => setName(e.target.value)} required></input>
                 <br></br><br></br>
 
                 <input type="email"
                     placeholder="Enter Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}></input>
+                    onChange={(e) => setEmail(e.target.value)} required></input>
                 <br></br><br></br>
 
                 <input type="password"
                     placeholder="Enter Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"></input>
+                    autoComplete="current-password" required></input>
                 <br></br><br></br>
 
                 <button type="submit">Register</button>

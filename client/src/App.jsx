@@ -8,7 +8,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./components/Dashboard";
 import AdminDashboard from "./components/AdminDashboard";
-
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 import './App.css'
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
 
       <Navbar />
 
-      
+
 
       <Routes>
 
@@ -58,6 +59,16 @@ function App() {
               <AdminDashboard />
             </PrivateRoute>
           }
+        />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPassword />}
         />
 
       </Routes>

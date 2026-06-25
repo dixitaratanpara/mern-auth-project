@@ -17,6 +17,9 @@ A Full Stack MERN Authentication System built using React, Node.js, Express and 
 * Admin Dashboard
 * Delete Users
 * Pagination
+*  MongoDB Atlas
+*  React Context API
+*  Protected Routes
 
 ## Tech Stack
 

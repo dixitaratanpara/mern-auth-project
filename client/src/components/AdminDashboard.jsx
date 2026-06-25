@@ -10,16 +10,16 @@ function AdminDashboard() {
 
     const [users, setUsers] = useState([]);
 
-
     const [page, setPage] = useState(1);
 
     const [totalPages, setTotalPages] = useState(1);
 
+
     //api call admin dashboard
     useEffect(() => {
         const fetchUsers = async () => {
-            try {
 
+            try {
                 const response = await axios.get(
                     `http://localhost:5000/users?page=${page}`,
                     {
@@ -34,27 +34,17 @@ function AdminDashboard() {
                 setUsers(response.data.users);
                 setTotalPages(response.data.totalPages);
 
-            } catch (error) {
+            }
 
+            catch (error) {
                 console.log(error);
-
             }
         };
 
         fetchUsers();
+
     }, [token, page]);
 
-    //     //delete conform popup
-    //     const deleteUser = async (id) => {
-
-    //     const confirmDelete = window.confirm(
-    //         "Are you sure you want to delete this user?"
-    //     );
-
-    //     if (!confirmDelete) return;
-
-
-    // };
 
 
     //delete admin dashboard
@@ -74,9 +64,9 @@ function AdminDashboard() {
                     },
                 }
             );
-            setUsers(
-                users.filter((item) => item._id !== id)
-            );
+
+            setUsers(users.filter((item) => item._id !== id));
+
             alert("User Deleted Successfully");
         }
         catch (error) {
@@ -152,7 +142,7 @@ function AdminDashboard() {
                                 <td>{item.role}</td>
                                 <td>
                                     <button
-                                     className="delete-btn"
+                                        className="delete-btn"
                                         onClick={() => deleteUser(item._id)}
                                     >
                                         🗑 Delete
@@ -165,33 +155,34 @@ function AdminDashboard() {
             </div>
 
             <br />
-<div className="pagination">
-    <button
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-            >
-                ⬅ Previous
-            </button>
 
-            &nbsp;&nbsp;
-            <br></br>
+            <div className="pagination">
+                <button
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
+                >
+                    ⬅ Previous
+                </button>
 
-            <span>
+                &nbsp;&nbsp;
+                <br></br>
 
-                Page {page} of {totalPages}
+                <span>
 
-            </span>
+                    Page {page} of {totalPages}
 
-            &nbsp;&nbsp;
+                </span>
 
-            <button
-                onClick={() => setPage(page + 1)}
-                disabled={page === totalPages}
-            >
-                Next ➡
-            </button>
-</div>
-            
+                &nbsp;&nbsp;
+
+                <button
+                    onClick={() => setPage(page + 1)}
+                    disabled={page === totalPages}
+                >
+                    Next ➡
+                </button>
+            </div>
+
 
         </div>
 

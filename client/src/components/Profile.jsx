@@ -119,6 +119,18 @@ function Profile() {
 
     //change password
     const changePassword = async () => {
+
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRegex.test(newPassword)) {
+            toast.error(
+                "Password must contain 8+ chars, 1 uppercase, 1 lowercase, 1 number and 1 special character"
+            );
+            return;
+        }
+
+
         try {
             const token =
                 localStorage.getItem("token");
@@ -148,6 +160,7 @@ function Profile() {
         }
     };
 
+
     //uplod profile picture
     const uploadImage = async () => {
         try {
@@ -166,7 +179,8 @@ function Profile() {
                     },
                 }
             );
-            console.log(response.data);
+
+            toast.success("Profile Image Updated");
         }
         catch (error) {
             console.log(error);
@@ -192,19 +206,24 @@ function Profile() {
                     setImage(e.target.files[0])
                 }
             />
+
             <button onClick={uploadImage}>
                 Upload Photo
             </button>
+
             <p>Hello</p>
+
             {user?.profileImage && (
 
                 <img
                     src={`http://localhost:5000/uploads/${user.profileImage}`}
                     alt="Profile"
                     width="150"
+                     className="profile-image"
                 />
 
             )}
+
             <p><strong>Name:</strong> {user?.name}</p>
             <p><strong>Email:</strong> {user?.email}</p>
 
@@ -214,6 +233,7 @@ function Profile() {
             >
                 Edit Profile
             </button>
+
             {editMode && (
                 <>
                     <input
@@ -239,6 +259,8 @@ function Profile() {
                     </button>
                 </>
             )}
+
+
             &nbsp;
 
             <h3>Change Password</h3>
@@ -249,6 +271,7 @@ function Profile() {
                 onChange={(e) =>
                     setOldPassword(e.target.value)}
             />
+
             <br /><br />
 
             <input
@@ -266,11 +289,13 @@ function Profile() {
             </button>
 
             &nbsp;
+
             <button onClick={deleteAccount}>
                 Delete Account
             </button>
 
             &nbsp;
+
             <button onClick={logout}>Logout</button>
         </div>
     );

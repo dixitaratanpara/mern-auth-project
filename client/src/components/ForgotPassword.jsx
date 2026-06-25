@@ -4,21 +4,18 @@ import { toast } from "react-toastify";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
-    
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+
         try {
-
             const response = await axios.post(
-
                 "http://localhost:5000/forgot-password",
-
                 {
                     email,
                 }
-
             );
 
             toast.success(response.data.message);
@@ -28,16 +25,13 @@ function ForgotPassword() {
         }
 
         catch (error) {
-
             toast.error(
-
-                error.response?.data?.message ||  "Something went wrong"
-
+                error.response?.data?.message || "Something went wrong"
             );
-
         }
 
     };
+
 
     return (
 
@@ -50,29 +44,19 @@ function ForgotPassword() {
             <form onSubmit={handleSubmit}>
 
                 <input
-
                     type="email"
-
                     placeholder="Enter Email"
-
                     value={email}
-
                     onChange={(e) =>
-
                         setEmail(e.target.value)
-
                     }
-
                     required
-
                 />
 
                 <br /><br />
 
                 <button type="submit">
-
                     Send Reset Link
-
                 </button>
 
             </form>

@@ -12,15 +12,25 @@ function Register() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
-        if (!name.trim()) {
+
+        if (!name) {
             toast.error("Please Enter Name");
             return;
         }
 
-        if (!email.trim()) {
+        if (!email) {
             toast.error("Please Enter Email");
             return;
+        }
+
+        const emailRegex = /^\S+@\S+\.\S+$/;
+
+        if (!emailRegex.test(email)) {
+            toast.error("Invalid Email");
+            return;
+
         }
 
         if (!password.trim()) {
@@ -28,11 +38,17 @@ function Register() {
             return;
         }
 
-        if (password.length < 6) {
-            toast.error("Password must be at least 6 characters");
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+
+            toast.error(
+                "Password must contain 8+ chars, 1 uppercase, 1 lowercase, 1 number and 1 special character"
+            );
+
             return;
         }
-
 
         try {
             const response = await axios.post(
@@ -51,11 +67,12 @@ function Register() {
         }
         catch (error) {
             toast.error(
-                error.response?.data?.message || "Registration Failed"
+                error.response.data.message || "Registration Failed"
             );
             console.log(error);
         }
     };
+
 
     return (
         <div className="card">
@@ -66,20 +83,20 @@ function Register() {
                 <input type="text"
                     placeholder="Enter Name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)} required></input>
+                    onChange={(e) => setName(e.target.value)}></input>
                 <br></br><br></br>
 
                 <input type="email"
                     placeholder="Enter Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)} required></input>
+                    onChange={(e) => setEmail(e.target.value)}></input>
                 <br></br><br></br>
 
                 <input type="password"
                     placeholder="Enter Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password" required></input>
+                    autoComplete="current-password"></input>
                 <br></br><br></br>
 
                 <button type="submit">Register</button>

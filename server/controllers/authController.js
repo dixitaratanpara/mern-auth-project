@@ -8,6 +8,29 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -15,6 +38,7 @@ exports.register = async (req, res) => {
       email,
       password: hashedPassword,
     });
+
 
     //email verification
     const verifyLink = `http://localhost:5000/verify/${user._id}`;
@@ -32,6 +56,7 @@ exports.register = async (req, res) => {
     </a>
     `
     );
+    console.log("Verification Email Sent");
 
 
     res.status(201).json({
@@ -41,12 +66,13 @@ exports.register = async (req, res) => {
   }
 
   catch (error) {
-     console.log(error);
+    console.log(error);
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
+
 };
 
 
@@ -76,8 +102,8 @@ exports.login = async (req, res) => {
         message: "Invalid Password",
       });
     }
-
-     if(!user.isVerified){
+    
+  if(!user.isVerified){
       return res.status(400).json({
         success:false,
         message:"please your email verified first",
@@ -97,13 +123,13 @@ exports.login = async (req, res) => {
       success: true,
       message: "Login Successful",
       token,                           //token
-     user: {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    image: user.image,
-  },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        profileImage: user.profileImage,
+      },
     });
     console.log(user.role);
 
@@ -118,41 +144,42 @@ exports.login = async (req, res) => {
   }
 };
 
+
 //email verification
 exports.verifyEmail = async (req, res) => {
 
-    try {
+  try {
 
-        const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id);
 
-        if (!user) {
+    if (!user) {
 
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
 
-        }
+    }
 
-        user.isVerified = true;
+    user.isVerified = true;
 
-        await user.save();
+    await user.save();
 
-        res.send(`
+    res.send(`
             <h2>Email Verified Successfully ✅</h2>
             <p>You can now login.</p>
         `);
 
-    }
+  }
 
-    catch (error) {
+  catch (error) {
 
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-    }
+  }
 
 };
 
@@ -161,67 +188,52 @@ exports.verifyEmail = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
 
-    try {
+  try {
 
-        const page = Number(req.query.page) || 1;
+    const page = Number(req.query.page) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+    const totalUsers = await User.countDocuments();
+    const users = await User.find()
 
-        const limit = 5;
+      .select("-password")
+      .skip(skip)
+      .limit(limit);
 
-        const skip = (page - 1) * limit;
+    res.json({
+      success: true,
+      users,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+    });
+  }
 
-        const totalUsers = await User.countDocuments();
+  catch (error) {
 
-        const users = await User.find()
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-            .select("-password")
-
-            .skip(skip)
-
-            .limit(limit);
-
-        res.json({
-
-            success: true,
-
-            users,
-
-            currentPage: page,
-
-            totalPages: Math.ceil(totalUsers / limit),
-
-            totalUsers,
-
-        });
-
-    }
-
-    catch (error) {
-
-        res.status(500).json({
-
-            success: false,
-
-            message: error.message,
-
-        });
-
-    }
-
+  }
 };
+
+
 //delete admin dashboard user
-exports.deleteUser= async(req,res)=>{
-  try{
+exports.deleteUser = async (req, res) => {
+  try {
     await User.findByIdAndDelete(req.params.id);
 
     res.json({
-      success:true,
-      message:"User Deleted Successfully",
+      success: true,
+      message: "User Deleted Successfully",
     });
   }
-  catch(error){
+  catch (error) {
     res.status(500).json({
-      success:false,
-      message:error.message,
+      success: false,
+      message: error.message,
     });
   }
 };
@@ -229,107 +241,120 @@ exports.deleteUser= async(req,res)=>{
 //forgot password
 exports.forgotPassword = async (req, res) => {
 
-    try {
+  try {
 
-        const { email } = req.body;
+    const { email } = req.body;
 
-        // First find user
-        const user = await User.findOne({ email });
+    // First find user
+    const user = await User.findOne({ email });
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
-        // Then create token
-        const resetToken = jwt.sign(
-            { id: user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "15m" }
-        );
+    // Then create token
+    const resetToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
-        // Then create link
-        const resetLink =
-            `http://localhost:5173/reset-password/${resetToken}`;
+    // Then create link
+    const resetLink =
+      `http://localhost:5173/reset-password/${resetToken}`;
 
-        // Then send email
-        await sendEmail(
-            user.email,
-            "Reset Password",
-            `
+    // Then send email
+    await sendEmail(
+      user.email,
+      "Reset Password",
+      `
             <h2>Hello ${user.name}</h2>
             <p>Click below to reset password</p>
             <a href="${resetLink}">Reset Password</a>
             `
-        );
+    );
 
-        res.json({
-            success: true,
-            message: "Reset Password Link Sent Successfully",
-        });
+    res.json({
+      success: true,
+      message: "Reset Password Link Sent Successfully",
+    });
 
-    } catch (error) {
+  } catch (error) {
 
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
 
-    }
+  }
 
 };
+
 
 //reset password
 // Reset Password
 exports.resetPassword = async (req, res) => {
 
-    try {
+  try {
 
-        const { token } = req.params;
-        const { password } = req.body;
-
-        // Verify Token
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
-
-        // Find User
-        const user = await User.findById(decoded.id);
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
-        // Hash New Password
-        const hashedPassword = await bcrypt.hash(
-            password,
-            10
-        );
-
-        user.password = hashedPassword;
-
-        await user.save();
-
-        res.json({
-            success: true,
-            message: "Password Reset Successfully",
-        });
-
+    const { token } = req.params;
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required",
+      });
     }
 
-    catch (error) {
-
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
-
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
     }
 
+    // Verify Token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    // Find User
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Hash New Password
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password Reset Successfully",
+    });
+
+  }
+
+  catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
 };

@@ -18,6 +18,7 @@ function Login() {
 
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
@@ -43,45 +44,29 @@ function Login() {
 
       setUser(response.data.user);
 
-      // localStorage.setItem("token", response.data.token);
-
-      // localStorage.setItem("user",
-      //   JSON.stringify({
-      //     email: email,
-      //   }));
-
-      // setToken(response.data.token);
-
-
-      // setUser({
-      //   email: email,
-      // });
-
       toast.success("Login Successful"); //toast
-      // navigate("/dashboard");
+
       console.log("FULL RESPONSE =", response.data);
       console.log("ROLE =", response.data.user.role);
+
       if (response.data.user.role.trim() === "admin") {
-
         console.log("ADMIN LOGIN");
-
         navigate("/admin");
-
-      } else {
-
+      }
+      else {
         console.log("USER LOGIN");
-
         navigate("/dashboard");
-
       }
 
     }
 
     catch (error) {
       console.log(error);
+
       toast.error(
         error.response?.data?.message || "Login Failed"
       );
+
     }
   };
 
@@ -118,7 +103,7 @@ function Login() {
             Forgot Password?
           </Link>
         </p>
-        
+
       </form>
       <p> Don't have account?please Register First
         &nbsp;<Link to={"/register"}>Register</Link>

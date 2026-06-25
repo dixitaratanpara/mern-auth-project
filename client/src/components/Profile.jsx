@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
@@ -24,7 +25,7 @@ function Profile() {
                 console.log("Token:", token);
 
                 const response = await axios.get(
-                    "http://localhost:5000/profile", {
+                    `${API_URL}/profile`, {
                     headers: {
                         authorization: token,
                     },
@@ -59,8 +60,8 @@ function Profile() {
 
             const token = localStorage.getItem("token");
 
-            const response = await axios.put(
-                "http://localhost:5000/profile",
+            const response = await axios.put(   
+               `${API_URL}/profile`,
                 {
                     name,
                     email,
@@ -97,7 +98,7 @@ function Profile() {
             const token = localStorage.getItem("token");
 
             await axios.delete(
-                "http://localhost:5000/profile",
+                `${API_URL}/profile`,
                 {
                     headers: {
                         authorization: token,
@@ -136,7 +137,7 @@ function Profile() {
                 localStorage.getItem("token");
 
             const response = await axios.put(
-                "http://localhost:5000/change-password",
+                `${API_URL}/change-password`,
                 {
                     oldPassword,
                     newPassword,
@@ -171,7 +172,7 @@ function Profile() {
             formData.append("image", image);
 
             const response = await axios.put(
-                "http://localhost:5000/upload-profile-image",
+                `${API_URL}/upload-profile-image`,
                 formData,
                 {
                     headers: {
@@ -216,7 +217,7 @@ function Profile() {
             {user?.profileImage && (
 
                 <img
-                    src={`http://localhost:5000/uploads/${user.profileImage}`}
+                    src={`${API_URL}/uploads/${user.profileImage}`}
                     alt="Profile"
                     width="150"
                      className="profile-image"

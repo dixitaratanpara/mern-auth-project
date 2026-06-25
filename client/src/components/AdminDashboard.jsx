@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 
 function AdminDashboard() {
@@ -20,11 +21,12 @@ function AdminDashboard() {
         const fetchUsers = async () => {
 
             try {
+
                 const response = await axios.get(
-                    `http://localhost:5000/users?page=${page}`,
+                    `${API_URL}/users?page=${page}`,
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            authorization: token,
                         },
                     }
                 );
@@ -57,7 +59,7 @@ function AdminDashboard() {
 
         try {
             await axios.delete(
-                `http://localhost:5000/users/${id}`,
+                `${API_URL}/users/${id}`,
                 {
                     headers: {
                         Authorization: token,

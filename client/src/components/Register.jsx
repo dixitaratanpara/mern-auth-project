@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -52,7 +53,7 @@ function Register() {
 
         try {
             const response = await axios.post(
-                "http://localhost:5000/register",
+                `${API_URL}/register`,
                 {
                     name,
                     email,

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 function Dashboard() {
 

@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log("Current Directory =", __dirname);
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -228,8 +229,11 @@ app.put(
 );
 
 //mongodb connection
+// mongoose
+//   .connect("mongodb://127.0.0.1:27017/mernAuthDb")
+console.log(process.env.MONGO_URI);
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mernAuthDb")
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
   })

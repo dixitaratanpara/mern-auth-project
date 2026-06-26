@@ -41,7 +41,8 @@ exports.register = async (req, res) => {
 
 
     //email verification
-    const verifyLink = `http://localhost:5000/verify/${user._id}`;
+    const verifyLink =
+      `https://mern-auth-project-backend-pj8x.onrender.com/verify/${user._id}`;
 
     await sendEmail(
       user.email,
@@ -102,13 +103,13 @@ exports.login = async (req, res) => {
         message: "Invalid Password",
       });
     }
-    
-  if(!user.isVerified){
+
+    if (!user.isVerified) {
       return res.status(400).json({
-        success:false,
-        message:"please your email verified first",
+        success: false,
+        message: "please your email verified first",
       })
-     }    
+    }
 
     const token = jwt.sign(
       {

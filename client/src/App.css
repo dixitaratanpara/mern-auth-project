@@ -1,4 +1,19 @@
 /* Reset */
+@media (max-width:768px){
+
+  h1{
+    font-size:2rem;
+  }
+
+  .admin-card{
+    width:100%;
+    padding:15px;
+  }
+
+  table{
+    min-width:600px;
+  }
+}
 
 *{
     margin:0;
@@ -283,6 +298,8 @@ table{
 
     width:100%;
 
+    min-width: 600px;
+
     border-collapse:collapse;
 
     margin-top:20px;
@@ -387,6 +404,7 @@ tr:nth-child(even){
     h1{
 
         font-size:2rem;
+        color:white;
 
     }
 

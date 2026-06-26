@@ -61,14 +61,14 @@ function Login() {
 
     }
 
-    catch (error) {
-      console.log(error);
+  catch (error) {
+  console.log(error.response?.data);
+  console.log(error.response?.status);
 
-      toast.error(
-        error.response?.data?.message || "Login Failed"
-      );
-
-    }
+  toast.error(
+    error.response?.data?.message || "Login Failed"
+  );
+}
   };
 
 

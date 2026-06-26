@@ -265,7 +265,7 @@ exports.forgotPassword = async (req, res) => {
 
     // Then create link
     const resetLink =
-      `http://localhost:5173/reset-password/${resetToken}`;
+`https://mern-auth-project-jade.vercel.app/reset-password/${resetToken}`;
 
     // Then send email
     await sendEmail(
